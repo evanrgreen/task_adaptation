@@ -84,6 +84,7 @@ def build_data_pipeline(data_params, mode):
       preprocess_fn=functools.partial(
           preprocess_fn,
           input_range=data_params["input_range"],
+          size=data_params.get("size",224),
           ),
       for_eval=mode == "eval",
       shuffle_buffer_size=data_params["shuffle_buffer_size"],
