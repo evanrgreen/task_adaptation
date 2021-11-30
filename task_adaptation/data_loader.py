@@ -58,14 +58,15 @@ def get_dataset_instance(data_params):
         type(data_params["dataset"])))
 
 
-def preprocess_fn(data, size=224, input_range=(0.0, 1.0)):
-  image = data["image"]
-  image = tf.image.resize(image, [size, size])
+def preprocess_fn(data, size=224, input_range=(0.0, 1.0), preprocess=True):
+  if preprocess:
+    image = data["image"]
+    image = tf.image.resize(image, [size, size])
 
-  image = tf.cast(image, tf.float32) / 255.0
-  image = image * (input_range[1] - input_range[0]) + input_range[0]
+    image = tf.cast(image, tf.float32) / 255.0
+    image = image * (input_range[1] - input_range[0]) + input_range[0]
 
-  data["image"] = image
+    data["image"] = image
   return data
 
 
@@ -85,6 +86,7 @@ def build_data_pipeline(data_params, mode):
           preprocess_fn,
           input_range=data_params["input_range"],
           size=data_params.get("size",224),
+          preprocess=data_params.get("preprocess", True),
           ),
       for_eval=mode == "eval",
       shuffle_buffer_size=data_params["shuffle_buffer_size"],
